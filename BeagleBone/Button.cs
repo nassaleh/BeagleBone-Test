@@ -4,7 +4,7 @@ using System.Device.Gpio.Drivers;
 
 namespace BBB
 {
-    
+
     class Button : IDisposable
     {
         private int gpiochip;
@@ -44,7 +44,7 @@ namespace BBB
                 ctrl.Dispose();
                 ctrl = null;
             }
-            
+
             if (disposing && driver != null)
             {
                 driver.Dispose();
