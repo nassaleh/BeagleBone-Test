@@ -1,24 +1,20 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Device.Gpio;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Data.Sqlite;
 
+
 namespace Sqlite
 {
 
-    class LogBook
+    class DBHelper
     {
         private String data_source;
 
-        //public static readonly (int, string)[] tupleList = new (int, string)[]
-        //{
-        //    (1, "boot"),
-        //    (2, "push")
-        //};
-
-        public LogBook(String data_source)
+        public DBHelper(String data_source)
         {
             this.data_source = data_source;
             CreateDB();
@@ -45,6 +41,15 @@ namespace Sqlite
             }
         }
 
+        public record PinRecord
+        {
+            public int Id { get; set; }
+            public string Gpio { get; set; }
+            public string PinValue { get; set; }
+
+            public DateTime Timestamp { get; set; } = DateTime.Now;
+        }
+
         public void Log(string gpio, string pinValue)
         {
             using (var connection = new SqliteConnection("Data Source=" + data_source))
@@ -55,6 +60,27 @@ namespace Sqlite
 
                 cmdAddEntry.CommandText = $"INSERT INTO log(gpio, pinValue) VALUES(\"{gpio}\", \"{pinValue}\")";
                 cmdAddEntry.ExecuteNonQuery();
+
+                connection.Close();
+            }
+        }
+
+        public void GetRecords()
+        {
+            using (var connection = new SqliteConnection("Data Source=" + data_source))
+            {
+                connection.Open();
+
+                using (SqliteCommand fmd = connection.CreateCommand())
+                {
+                    //fmd.CommandText = @"SELECT DISTINCT FileName FROM Import";
+                    //fmd.CommandType = CommandType.Text;
+                    //SQLiteDataReader r = fmd.ExecuteReader();
+                    //while (r.Read())
+                    //{
+                    //    ImportedFiles.Add(Convert.ToString(r["FileName"]));
+                    //}
+                }
 
                 connection.Close();
             }

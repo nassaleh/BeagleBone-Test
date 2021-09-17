@@ -11,50 +11,78 @@ namespace BBB
     {
         static void Main(String[] args)
         {
-
+            ReadDB();
             ReadPins();
         }
 
+        public static void ReadDB()
+        {
+            using (PinContext db = new PinContext())
+            {
+                foreach (var record in db.PinRecords)
+                {
+                    Console.WriteLine($"{record.Id} | {record.Gpio} | {record.PinValue} | {record.Timestamp}");
+                }
+            }
+        }
+
+
         public static void ReadPins()
         {
-            LogBook logger = new LogBook("logbook.db");
             int[] pins = { 3, 4, 5, 6 };
 
             //IPinReader pinReader = new PinReader(2);
             IPinReader pinReader = new MockReader();
 
-            try
+            using (PinContext db = new PinContext())
             {
-                foreach (var pin in pins)
+                db.Database.EnsureCreated();
+                try
                 {
-                    pinReader.OpenPin(pin, PinMode.Input);
+                    foreach (var pin in pins)
+                    {
+                        pinReader.OpenPin(pin, PinMode.Input);
+                    }
                 }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e);
-            }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
 
-            foreach (var pin in pins)
-            {
-                var value = $"{pinReader.Read(pin)}_ON_BOOT";
-                logger.Log(pin.ToString(), value);
-                Console.Write($"{pin}: {value} | ");
-            }
-
-            Console.WriteLine("Pin Values");
-
-            int i = 0;
-            while (i++ < 60)
-            {
                 foreach (var pin in pins)
                 {
-                    var value = pinReader.Read(pin).ToString();
-                    logger.Log(pin.ToString(), value);
+                    var value = $"{pinReader.Read(pin)}_ON_BOOT";
+                    //logger.Log(pin.ToString(), value);
+                    db.PinRecords.Add(new DBHelper.PinRecord()
+                    {
+                        Gpio = pin.ToString(),
+                        PinValue = value
+                    });
                     Console.Write($"{pin}: {value} | ");
                 }
-                Console.WriteLine();
-                Thread.Sleep(1000);
+
+                db.SaveChanges();
+
+                Console.WriteLine("Pin Values");
+
+                int i = 0;
+                while (i++ < 15)
+                {
+                    foreach (var pin in pins)
+                    {
+                        var value = pinReader.Read(pin).ToString();
+                        //logger.Log(pin.ToString(), value);
+                        db.PinRecords.Add(new DBHelper.PinRecord()
+                        {
+                            Gpio = pin.ToString(),
+                            PinValue = value
+                        });
+                        Console.Write($"{pin}: {value} | ");
+                        db.SaveChanges();
+                    }
+                    Console.WriteLine();
+                    Thread.Sleep(1000);
+                }
             }
         }
 
@@ -71,7 +99,7 @@ namespace BBB
                 exitEvent.Set();
             };
 
-            LogBook log = new LogBook("logbook.db");
+            DBHelper log = new DBHelper("logbook.db");
             log.LogBoot();
 
             LedWorker ledWorker = new LedWorker();
