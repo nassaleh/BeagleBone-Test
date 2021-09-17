@@ -45,7 +45,7 @@ namespace Sqlite
             }
         }
 
-        public void Log(string gpio, PinValue pinValue)
+        public void Log(string gpio, string pinValue)
         {
             using (var connection = new SqliteConnection("Data Source=" + data_source))
             {
@@ -53,7 +53,7 @@ namespace Sqlite
 
                 var cmdAddEntry = connection.CreateCommand();
 
-                cmdAddEntry.CommandText = $"INSERT INTO log(gpio, pinValue) VALUES({gpio}, {pinValue})";
+                cmdAddEntry.CommandText = $"INSERT INTO log(gpio, pinValue) VALUES(\"{gpio}\", \"{pinValue}\")";
                 cmdAddEntry.ExecuteNonQuery();
 
                 connection.Close();

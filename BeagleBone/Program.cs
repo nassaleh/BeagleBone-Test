@@ -18,25 +18,42 @@ namespace BBB
         public static void ReadPins()
         {
             LogBook logger = new LogBook("logbook.db");
-            // PinReader pinReader = new PinReader();
+            int[] pins = { 3, 4, 5, 6 };
 
-            int pin = 3;
-            var driver = new LibGpiodDriver(2);
-            GpioController gpioController = new GpioController(PinNumberingScheme.Logical, driver);
+            //IPinReader pinReader = new PinReader(2);
+            IPinReader pinReader = new MockReader();
 
             try
             {
-                gpioController.OpenPin(pin, PinMode.Input);
+                foreach (var pin in pins)
+                {
+                    pinReader.OpenPin(pin, PinMode.Input);
+                }
             }
             catch (Exception e)
             {
                 Console.WriteLine(e);
             }
 
-            while (true)
+            foreach (var pin in pins)
             {
-                var value = gpioController.Read(pin);
-                Console.WriteLine($"Pin {pin}: {value}");
+                var value = $"{pinReader.Read(pin)}_ON_BOOT";
+                logger.Log(pin.ToString(), value);
+                Console.Write($"{pin}: {value} | ");
+            }
+
+            Console.WriteLine("Pin Values");
+
+            int i = 0;
+            while (i++ < 60)
+            {
+                foreach (var pin in pins)
+                {
+                    var value = pinReader.Read(pin).ToString();
+                    logger.Log(pin.ToString(), value);
+                    Console.Write($"{pin}: {value} | ");
+                }
+                Console.WriteLine();
                 Thread.Sleep(1000);
             }
         }
