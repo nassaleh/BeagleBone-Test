@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Device.Gpio;
 using System.Device.Gpio.Drivers;
 
@@ -18,12 +14,21 @@ namespace BeagleBone
 
         public PinValue Read(int pin)
         {
-            return Read(pin);
+            return gpioController.Read(pin);
         }
 
         public void OpenPin(int pin, PinMode pinMode)
         {
             gpioController.OpenPin(pin, pinMode);
+        }
+
+        public void RegisterPinsForCallback(int[] pins, PinChangeEventHandler pinChangeEventHandler)
+        {
+            foreach (var pin in pins)
+            {
+                gpioController.RegisterCallbackForPinValueChangedEvent(pin, PinEventTypes.Rising, pinChangeEventHandler);
+                gpioController.RegisterCallbackForPinValueChangedEvent(pin, PinEventTypes.Falling, pinChangeEventHandler);
+            }
         }
 
         private GpioController gpioController;
@@ -41,6 +46,11 @@ namespace BeagleBone
             Random r = new Random();
             var value = r.Next(0, 2);
             return value == 1 ? PinValue.High : PinValue.Low;
+        }
+
+        public void RegisterPinsForCallback(int[] pins, PinChangeEventHandler pinChangeEventHandler)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -11,24 +11,21 @@ namespace BBB
     {
         static void Main(String[] args)
         {
-            ReadDB();
-            ReadPins();
+            int[] pins = { 3, 4, 5, 6 };
+            PinManager pm = new PinManager(pins, new PinReader(2), new DBHelper());
+
+            pm.Initialize();
+            pm.Run();
+
+
+
         }
 
-        public static void ReadDB()
-        {
-            using (PinContext db = new PinContext())
-            {
-                foreach (var record in db.PinRecords)
-                {
-                    Console.WriteLine($"{record.Id} | {record.Gpio} | {record.PinValue} | {record.Timestamp}");
-                }
-            }
-        }
 
 
         public static void ReadPins()
         {
+            Console.WriteLine("In ReadPins");
             int[] pins = { 3, 4, 5, 6 };
 
             //IPinReader pinReader = new PinReader(2);
@@ -53,7 +50,7 @@ namespace BBB
                 {
                     var value = $"{pinReader.Read(pin)}_ON_BOOT";
                     //logger.Log(pin.ToString(), value);
-                    db.PinRecords.Add(new DBHelper.PinRecord()
+                    db.PinRecords.Add(new PinRecord()
                     {
                         Gpio = pin.ToString(),
                         PinValue = value
@@ -72,7 +69,7 @@ namespace BBB
                     {
                         var value = pinReader.Read(pin).ToString();
                         //logger.Log(pin.ToString(), value);
-                        db.PinRecords.Add(new DBHelper.PinRecord()
+                        db.PinRecords.Add(new PinRecord()
                         {
                             Gpio = pin.ToString(),
                             PinValue = value
@@ -99,8 +96,8 @@ namespace BBB
                 exitEvent.Set();
             };
 
-            DBHelper log = new DBHelper("logbook.db");
-            log.LogBoot();
+            DBHelper log = new DBHelper();
+            //log.LogBoot();
 
             LedWorker ledWorker = new LedWorker();
             Thread ledThread = new Thread(ledWorker.DoWork);

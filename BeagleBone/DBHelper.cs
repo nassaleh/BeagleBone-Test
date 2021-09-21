@@ -1,105 +1,56 @@
 ﻿using System;
-using System.ComponentModel;
-using System.Device.Gpio;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Data.Sqlite;
+using System.Collections.Generic;
+using System.Linq;
+using BeagleBone;
 
 
 namespace Sqlite
 {
 
-    class DBHelper
+    public class DBHelper : IDBHelper
     {
-        private String data_source;
-
-        public DBHelper(String data_source)
+        public DBHelper()
         {
-            this.data_source = data_source;
-            CreateDB();
-        }
-
-        private void CreateDB()
-        {
-            using (var connection = new SqliteConnection("Data Source=" + data_source))
+            using (PinContext db = new PinContext())
             {
-                connection.Open();
-
-                var cmdCreateLogbook = connection.CreateCommand();
-                cmdCreateLogbook.CommandText =
-                    @"CREATE TABLE IF NOT EXISTS log (
-                            id INTEGER PRIMARY KEY,
-                            gpio TEXT,
-                            pinValue TEXT,
-                            timestamp DATETIME DEFAULT CURRENT_TIMESTAMP
-                    )";
-
-                cmdCreateLogbook.ExecuteNonQuery();
-
-                connection.Close();
+                db.Database.EnsureCreated();
             }
         }
 
-        public record PinRecord
+        public void Log(PinRecord pinRecord)
         {
-            public int Id { get; set; }
-            public string Gpio { get; set; }
-            public string PinValue { get; set; }
-
-            public DateTime Timestamp { get; set; } = DateTime.Now;
-        }
-
-        public void Log(string gpio, string pinValue)
-        {
-            using (var connection = new SqliteConnection("Data Source=" + data_source))
+            using (PinContext db = new PinContext())
             {
-                connection.Open();
-
-                var cmdAddEntry = connection.CreateCommand();
-
-                cmdAddEntry.CommandText = $"INSERT INTO log(gpio, pinValue) VALUES(\"{gpio}\", \"{pinValue}\")";
-                cmdAddEntry.ExecuteNonQuery();
-
-                connection.Close();
+                db.PinRecords.Add(pinRecord);
+                Console.Write($"{pinRecord.Gpio}: {pinRecord.PinValue} | ");
+                db.SaveChanges();
             }
         }
 
-        public void GetRecords()
+        public IEnumerable<PinRecord> GetRecords()
         {
-            using (var connection = new SqliteConnection("Data Source=" + data_source))
+            using (PinContext db = new PinContext())
             {
-                connection.Open();
-
-                using (SqliteCommand fmd = connection.CreateCommand())
+                foreach (var record in db.PinRecords)
                 {
-                    //fmd.CommandText = @"SELECT DISTINCT FileName FROM Import";
-                    //fmd.CommandType = CommandType.Text;
-                    //SQLiteDataReader r = fmd.ExecuteReader();
-                    //while (r.Read())
-                    //{
-                    //    ImportedFiles.Add(Convert.ToString(r["FileName"]));
-                    //}
+                    Console.WriteLine($"{record.Id} | {record.Gpio} | {record.PinValue} | {record.Timestamp}");
                 }
 
-                connection.Close();
+                return db.PinRecords.ToList();
             }
         }
 
-        public void LogBoot()
-        {
-            using (var connection = new SqliteConnection("Data Source=" + data_source))
-            {
-                connection.Open();
+    }
 
-                var cmdAddEntry = connection.CreateCommand();
+    public record PinRecord
+    {
+        public int Id { get; set; }
 
-                cmdAddEntry.CommandText = @"INSERT INTO log(event_id) VALUES(1)";
-                cmdAddEntry.ExecuteNonQuery();
+        public string Gpio { get; set; }
 
-                connection.Close();
-            }
-        }
+        public string PinValue { get; set; }
+
+        public DateTime Timestamp { get; set; } = DateTime.Now;
     }
 
 }

@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Sqlite;
 using static Sqlite.DBHelper;
 
 namespace BeagleBone

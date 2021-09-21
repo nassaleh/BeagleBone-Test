@@ -6,5 +6,6 @@ namespace BeagleBone
     {
         void OpenPin(int pin, PinMode pinMode);
         PinValue Read(int pin);
+        void RegisterPinsForCallback(int[] pins, PinChangeEventHandler pinChangeEventHandler);
     }
 }
