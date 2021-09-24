@@ -50,7 +50,6 @@ namespace BeagleBone
 
         public void RegisterPinsForCallback(int[] pins, PinChangeEventHandler pinChangeEventHandler)
         {
-            throw new NotImplementedException();
         }
     }
 }

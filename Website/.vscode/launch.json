@@ -1,0 +1,71 @@
+{
+    "version": "0.2.0",
+    "configurations": [        
+        {
+            "name": "Website Deploy",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "BBBPublish",
+            "program": "~/${workspaceFolderBasename}/${workspaceFolderBasename}",
+            "cwd": "~/${workspaceFolderBasename}",
+            "stopAtEntry": false,
+            "console": "internalConsole",
+            "args": [
+                "https://your-dmx-function.azurewebsites.net/api"
+            ],
+            "pipeTransport": {
+                "pipeCwd": "${workspaceRoot}",
+                "pipeProgram": "/usr/bin/ssh",
+                "pipeArgs": [
+                    "debian@192.168.1.111"
+                ],
+                "debuggerPath": "~/vsdbg/vsdbg"
+            },
+            "windows": {
+                "pipeTransport": {
+                    "pipeCwd": "${workspaceRoot}",
+                    "pipeProgram": "plink",
+                    "pipeArgs": [
+                        "-ssh",
+                        "-pw",
+                        "temppwd",
+                        "debian@192.168.1.111"
+                    ],
+                    "debuggerPath": "~/vsdbg/vsdbg"
+                }
+            }
+        },
+        {
+            // Use IntelliSense to find out which attributes exist for C# debugging
+            // Use hover for the description of the existing attributes
+            // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
+            "name": ".NET Core Launch (web)",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            // If you have changed target frameworks, make sure to update the program path.
+            "program": "${workspaceFolder}/bin/Debug/net5.0/Website.dll",
+            "args": [],
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            // Enable launching a web browser when ASP.NET Core starts. For more information: https://aka.ms/VSCode-CS-LaunchJson-WebBrowser
+            "serverReadyAction": {
+                "action": "openExternally",
+                "pattern": "\\bNow listening on:\\s+(https?://\\S+)"
+            },
+            "env": {
+                "ASPNETCORE_ENVIRONMENT": "Development"
+            },
+            "sourceFileMap": {
+                "/Views": "${workspaceFolder}/Views"
+            }
+        },
+        {
+            "name": ".NET Core Attach",
+            "type": "coreclr",
+            "request": "attach"
+        }
+       
+
+    ]
+}

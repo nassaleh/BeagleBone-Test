@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/BeagleBone/BeagleBone.csproj",
+                "${workspaceFolder}/Website.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/BeagleBone/BeagleBone.csproj",
+                "${workspaceFolder}/Website.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -32,7 +32,7 @@
             "args": [
                 "watch",
                 "run",
-                "${workspaceFolder}/BeagleBone/BeagleBone.csproj",
+                "${workspaceFolder}/Website.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -45,12 +45,12 @@
             "problemMatcher": "$msCompile",
             "args": [
                 "-c",
-                "\"dotnet publish -r linux-arm -o bin/linux-arm/publish",
+                "\"dotnet publish -r linux-arm -o bin/Release/net5.0",
                 "${workspaceFolder}/${workspaceFolderBasename}.csproj\"",
                 ";",
                 "sh",
                 "-c",
-                "\"rsync -rvuz ${workspaceFolder}/bin/linux-arm/publish/ debian@192.168.1.111:~/${workspaceFolderBasename}\""
+                "\"rsync -rvuz ${workspaceFolder}/bin/Release/net5.0/ debian@192.168.1.111:~/${workspaceFolderBasename}\""
             ],
             "windows": {
                 "command": "cmd",
