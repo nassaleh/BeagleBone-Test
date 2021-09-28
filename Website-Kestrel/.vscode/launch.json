@@ -17,7 +17,7 @@
                 "pipeCwd": "${workspaceRoot}",
                 "pipeProgram": "/usr/bin/ssh",
                 "pipeArgs": [
-                    "debian@192.168.7.2"
+                    "debian@192.168.1.111"
                 ],
                 "debuggerPath": "~/vsdbg/vsdbg"
             },
@@ -29,7 +29,7 @@
                         "-ssh",
                         "-pw",
                         "temppwd",
-                        "debian@192.168.7.2"
+                        "debian@192.168.1.111"
                     ],
                     "debuggerPath": "~/vsdbg/vsdbg"
                 }

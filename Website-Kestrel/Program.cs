@@ -30,6 +30,7 @@ namespace BBB
 
             int[] pins = { 3, 4, 5, 6 };
             PinManager pm = new PinManager(pins, new PinReader(2), new DBHelper("logbook.db"));
+            //PinManager pm = new PinManager(pins, new MockReader(), new DBHelper("logbook.db"));
 
             pm.Initialize();
 
@@ -37,21 +38,6 @@ namespace BBB
             Thread webThread = new Thread(webWorker.DoWork);
             webThread.Start();
 
-            //exitEvent.WaitOne();
-
-            //webWorker.RequestStop();
-
-            //webThread.Join();
-
-            //var host = new WebHostBuilder()
-            //   .UseKestrel()
-            //   .UseUrls("http://192.168.1.7:8069", "http://localhost:8069")
-            //   .UseContentRoot(Directory.GetCurrentDirectory())
-            //   .UseIISIntegration()
-            //   .UseStartup<Startup>()
-            //   .Build();
-
-            //host.Run();
         }
     }
-}   // ns BBB
+}
