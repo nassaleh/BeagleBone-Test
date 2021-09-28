@@ -1,18 +1,16 @@
 namespace ThreadUtils
 {
-
-public abstract class Worker
-{
-    //This method will be called when the thread is started.
-    public abstract void DoWork();
-
-    public void RequestStop()
+    public abstract class Worker
     {
-        _shouldStop = true;
-    }
-    //Volatile is used as hint to the compiler that this data
-    //member will be accessed by multiple threads.
-    protected volatile bool _shouldStop;
-}
+        //This method will be called when the thread is started.
+        public abstract void DoWork();
 
-}   // ns ThreadUtils
+        public void RequestStop()
+        {
+            _shouldStop = true;
+        }
+        //Volatile is used as hint to the compiler that this data
+        //member will be accessed by multiple threads.
+        protected volatile bool _shouldStop;
+    }
+}
