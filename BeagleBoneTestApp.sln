@@ -7,8 +7,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BeagleBone", "BeagleBone\Be
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "UnitTests\UnitTests.csproj", "{95D09A10-8522-4257-860B-4622BDB3D93A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Website", "Website\Website.csproj", "{8CD95CDA-EA52-49AD-A2BB-0D4A85FA7C9D}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Website-Kestrel", "Website-Kestrel\Website-Kestrel.csproj", "{D8DCC23F-7121-42A4-9E55-27C28968D214}"
 EndProject
 Global
@@ -25,10 +23,6 @@ Global
 		{95D09A10-8522-4257-860B-4622BDB3D93A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{95D09A10-8522-4257-860B-4622BDB3D93A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{95D09A10-8522-4257-860B-4622BDB3D93A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{8CD95CDA-EA52-49AD-A2BB-0D4A85FA7C9D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{8CD95CDA-EA52-49AD-A2BB-0D4A85FA7C9D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{8CD95CDA-EA52-49AD-A2BB-0D4A85FA7C9D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{8CD95CDA-EA52-49AD-A2BB-0D4A85FA7C9D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D8DCC23F-7121-42A4-9E55-27C28968D214}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D8DCC23F-7121-42A4-9E55-27C28968D214}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D8DCC23F-7121-42A4-9E55-27C28968D214}.Release|Any CPU.ActiveCfg = Release|Any CPU

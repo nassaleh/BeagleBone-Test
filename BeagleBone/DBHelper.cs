@@ -1,56 +1,97 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using BeagleBone;
+using Microsoft.Data.Sqlite;
 
-
-namespace Sqlite
+namespace BeagleBone
 {
-
     public class DBHelper : IDBHelper
     {
-        public DBHelper()
+        private String dataSource;
+
+        /// <summary>
+        /// Constructopr for the DBHelper class
+        /// </summary>
+        /// <param name="source">A datasource to use for the database</param>
+        public DBHelper(string source = "logbook.db")
         {
-            using (PinContext db = new PinContext())
-            {
-                db.Database.EnsureCreated();
-            }
+            this.dataSource = source;
+            CreateDB();
         }
 
+        /// <inheritdoc/>
         public void Log(PinRecord pinRecord)
         {
-            using (PinContext db = new PinContext())
+            using (var connection = new SqliteConnection("Data Source=" + dataSource))
             {
-                db.PinRecords.Add(pinRecord);
-                Console.Write($"{pinRecord.Gpio}: {pinRecord.PinValue} | ");
-                db.SaveChanges();
+                connection.Open();
+
+                var cmdAddEntry = connection.CreateCommand();
+                cmdAddEntry.CommandText = $"INSERT INTO PinRecords(Gpio, PinValue, Timestamp) VALUES(\"{pinRecord.Gpio}\", \"{pinRecord.PinValue}\", \"{pinRecord.Timestamp}\")";
+                cmdAddEntry.ExecuteNonQuery();
+                connection.Close();
             }
         }
 
+        /// <inheritdoc/>
         public IEnumerable<PinRecord> GetRecords()
         {
-            using (PinContext db = new PinContext())
-            {
-                foreach (var record in db.PinRecords)
-                {
-                    Console.WriteLine($"{record.Id} | {record.Gpio} | {record.PinValue} | {record.Timestamp}");
-                }
+            List<PinRecord> records = new List<PinRecord>();
 
-                return db.PinRecords.ToList();
+            try
+            {
+                using var connection = new SqliteConnection("Data Source=" + dataSource);
+                connection.Open();
+
+                using var cmdGetTable = connection.CreateCommand();
+                cmdGetTable.CommandText = "SELECT * from PinRecords";
+                using var reader = cmdGetTable.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    if (!DateTime.TryParse(reader.GetString(3), out DateTime parsedTimestamp))
+                    {
+                        parsedTimestamp = DateTime.Now;
+                    }
+
+                    records.Add(new PinRecord()
+                    {
+                        Id = Convert.ToInt32(reader.GetValue(0)),
+                        Gpio = reader.GetString(1),
+                        PinValue = reader.GetString(2),
+                        Timestamp = parsedTimestamp
+                    });
+                }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            return records;
         }
 
+        /// <summary>
+        /// Creates the database if it doesnt already exist
+        /// </summary>
+        private void CreateDB()
+        {
+            using (var connection = new SqliteConnection("Data Source=" + dataSource))
+            {
+                connection.Open();
+
+                var cmdCreateLogbook = connection.CreateCommand();
+                cmdCreateLogbook.CommandText =
+                @"CREATE TABLE IF NOT EXISTS PinRecords (
+                    Id INTEGER NOT NULL CONSTRAINT PK_PinRecords PRIMARY KEY AUTOINCREMENT,
+                    Gpio TEXT NULL,
+                    PinValue TEXT NULL,
+                    Timestamp TEXT NOT NULL
+                )";
+
+                cmdCreateLogbook.ExecuteNonQuery();
+
+                connection.Close();
+            }
+        }
     }
-
-    public record PinRecord
-    {
-        public int Id { get; set; }
-
-        public string Gpio { get; set; }
-
-        public string PinValue { get; set; }
-
-        public DateTime Timestamp { get; set; } = DateTime.Now;
-    }
-
 }

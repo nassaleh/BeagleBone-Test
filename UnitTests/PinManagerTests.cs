@@ -2,7 +2,7 @@ using System.Device.Gpio;
 using BeagleBone;
 using Moq;
 using NUnit.Framework;
-using Sqlite;
+using BeagleBone;
 
 namespace UnitTests
 {

@@ -4,24 +4,34 @@ using System.Device.Gpio.Drivers;
 
 namespace BeagleBone
 {
+    /// <summary>
+    /// Class used to read GPIO pin values
+    /// </summary>
     public class PinReader : IPinReader
     {
+        /// <summary>
+        /// Constructor used fogr this class
+        /// </summary>
+        /// <param name="gpioChip">The chip number to read from</param>
         public PinReader(int gpioChip)
         {
             var driver = new LibGpiodDriver(gpioChip);
             gpioController = new GpioController(PinNumberingScheme.Logical, driver);
         }
 
+        /// <inheritdoc/>
         public PinValue Read(int pin)
         {
             return gpioController.Read(pin);
         }
 
+        /// <inheritdoc/>
         public void OpenPin(int pin, PinMode pinMode)
         {
             gpioController.OpenPin(pin, pinMode);
         }
 
+        /// <inheritdoc/>
         public void RegisterPinsForCallback(int[] pins, PinChangeEventHandler pinChangeEventHandler)
         {
             foreach (var pin in pins)

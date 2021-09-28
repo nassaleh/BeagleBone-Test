@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Text;
+using BeagleBone;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -8,7 +9,6 @@ using Microsoft.AspNetCore.Internal;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Sqlite;
 using ThreadUtils;
 
 namespace Web
@@ -17,8 +17,6 @@ namespace Web
     {
         public static string GetTable()
         {
-            DBHelper db = new DBHelper();
-
             var sb = new StringBuilder();
 
             sb.Append(@"<html>
@@ -33,6 +31,8 @@ namespace Web
                         <body>
                         <table class=""table"">");
 
+            DBHelper db = new DBHelper();
+
             foreach (var pin in db.GetRecords())
             {
                 sb.AppendLine($"<tr>" +
@@ -40,7 +40,7 @@ namespace Web
                     $"<td>Pin: {pin.Gpio}</td>" +
                     $"<td>Value: {pin.PinValue}</td>" +
                     $"<td>Time: {pin.Timestamp}</td>" +
-                    $"</table>");
+                    $"</tr>");
             }
             sb.Append(@"</table>
                         </body>
@@ -66,7 +66,11 @@ namespace Web
                 });
             });
 
-            app.Run(context => context.Response.WriteAsync("Hello from BBB!"));
+            app.Run(context => context.Response.WriteAsync($"Hello World{Environment.NewLine}" +
+                  $".NET Core {Environment.Version}{Environment.NewLine}" +
+                  $"Environment.OSVersion: {Environment.OSVersion}{Environment.NewLine}" +
+                  $"Environment.Is64BitOperatingSystem: {Environment.Is64BitOperatingSystem}{Environment.NewLine}" +
+                  $"Environment.Is64BitProcess: {Environment.Is64BitProcess}", Encoding.UTF8));
         }
     }
 
