@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Device.Gpio;
+using System.Linq;
+using System.Net.NetworkInformation;
+using System.Net.Sockets;
 
 namespace BeagleBone
 {
@@ -11,6 +14,7 @@ namespace BeagleBone
         private IPinReader pinReader;
         private IDBHelper dbHelper;
         private int[] pins;
+        private Display display;
 
         /// <summary>
         /// Constructor for the class
@@ -55,6 +59,21 @@ namespace BeagleBone
             Console.WriteLine();
 
             pinReader.RegisterPinsForCallback(pins, PinChangeStateEventHandler); // TODO: Unregister?
+
+            this.display = new Display(new System.Device.I2c.I2cConnectionSettings(2, 0x3c));
+
+
+
+
+            var ipV4s = NetworkInterface.GetAllNetworkInterfaces()
+            .Select(i => i.GetIPProperties().UnicastAddresses)
+            .SelectMany(u => u)
+            .Where(u => u.Address.AddressFamily == AddressFamily.InterNetwork)
+            .Select(i => i.Address);
+
+            var ipList = string.Join("\n", ipV4s.Select(x => x.ToString()));
+
+            display.WriteLine(ipList);
         }
 
         /// <summary>

@@ -1,15 +1,7 @@
 ﻿using System;
-using System.Device.Gpio;
-using System.Device.Gpio.Drivers;
 using System.Threading;
-using System.Device.I2c;
-using ThreadUtils;
-
-using Web;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Hosting;
-using System.IO;
 using BeagleBone;
+using Web;
 
 namespace BBB
 {
@@ -37,7 +29,6 @@ namespace BBB
             using var webWorker = new wsWorker();
             Thread webThread = new Thread(webWorker.DoWork);
             webThread.Start();
-
         }
     }
 }
