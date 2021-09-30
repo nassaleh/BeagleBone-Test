@@ -65,10 +65,15 @@ namespace BeagleBone
 
             pinReader.RegisterPinsForCallback(pins, PinChangeStateEventHandler); // TODO: Unregister?
 
-            displayTask = DisplayInfo(ct.Token);          
+            displayTask = DisplayInfoAsync(ct.Token);
         }
 
-        public async Task DisplayInfo(CancellationToken cancellationToken)
+        /// <summary>
+        /// Displays the current time, IP Addresses, and DB entries on the Ssd1306 display
+        /// </summary>
+        /// <param name="cancellationToken">The token to monitor for cancellation requests.</param>
+        /// <returns>A task that represents the asynchronous operation.</returns>
+        public async Task DisplayInfoAsync(CancellationToken cancellationToken)
         {
             this.display = new Display(new System.Device.I2c.I2cConnectionSettings(2, 0x3c));
             var ipV4s = NetworkInterface.GetAllNetworkInterfaces()
