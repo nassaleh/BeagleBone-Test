@@ -18,5 +18,11 @@ namespace BeagleBone
         /// </summary>
         /// <param name="pinRecord">A record to save</param>
         void Log(PinRecord pinRecord);
+
+        /// <summary>
+        /// Gets the amount of <see cref="PinRecord"/> in the database
+        /// </summary>
+        /// <returns>The number of records</returns>
+        int GetRecordCount();
     }
 }

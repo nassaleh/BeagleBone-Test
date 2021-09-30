@@ -70,6 +70,32 @@ namespace BeagleBone
             return records;
         }
 
+        public int GetRecordCount()
+        {
+            int recordCount = 0;
+
+            try
+            {
+                using var connection = new SqliteConnection("Data Source=" + dataSource);
+                connection.Open();
+
+                using var cmdGetTable = connection.CreateCommand();
+                cmdGetTable.CommandText = "SELECT COUNT (*) from PinRecords";
+                using var reader = cmdGetTable.ExecuteReader();
+
+                while (reader.Read())
+                {
+                    recordCount = Convert.ToInt32(reader.GetValue(0));
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+            }
+
+            return recordCount;
+        }
+
         /// <summary>
         /// Creates the database if it doesnt already exist
         /// </summary>
@@ -93,5 +119,7 @@ namespace BeagleBone
                 connection.Close();
             }
         }
+
+
     }
 }
