@@ -1,13 +1,3 @@
-@REM bash -c "rsync -rvuz 'bin/Release/net5.0/' 'debian@192.168.1.111:~/Website-Kestrel'"
-@REM C:\Windows\System32\bash.exe -c "echo hello"
-
-
-
-
-
-
-
-
 echo %PROCESSOR_ARCHITECTURE%
 
 @REM if exist C:\Windows\Sysnative\bash.exe (
@@ -37,16 +27,3 @@ C:\Windows\Sysnative\bash.exe -c "rsync -rvuz '%outDir%' 'debian@192.168.1.111:~
 
 @REM Run the process
 C:\Windows\Sysnative\bash.exe -c "ssh 'debian@192.168.1.111' -f '/home/debian/%ProjectName%/linux-arm/%TargetName% </dev/null &>/dev/null &'"
-
-@REM NOTES
-@REM # Postbuild
-@REM bash -c "rsync -rvuz $(OutDir) debian@192.168.1.111:~/$(ProjectName)"
-
-@REM # Terminal output
-@REM Executing task: cmd /c "dotnet publish -r linux-arm -o bin\linux-arm\publish C:\Workspace\BeagleBone-Test\Website-Kestrel\Website-Kestrel.csproj" && 
-@REM bash -c "rsync -rvuz $(wslpath 'C:\Workspace\BeagleBone-Test\Website-Kestrel')/bin/linux-arm/publish/ debian@192.168.1.111:~/Website-Kestrel" <
-
-
-@REM # Working in CMD
-@REM bash -c "rsync -rvuz 'bin/Release/net5.0/' 'debian@192.168.1.111:~/Website-Kestrel'"
-
