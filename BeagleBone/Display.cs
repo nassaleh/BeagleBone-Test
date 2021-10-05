@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Device.I2c;
+using System.Diagnostics;
 using Iot.Device.Ssd13xx;
 using Iot.Device.Ssd13xx.Commands;
 using Ssd1306Cmnds = Iot.Device.Ssd13xx.Commands.Ssd1306Commands;
@@ -57,6 +58,12 @@ namespace BeagleBone
             //_ssd1306.SendCommand(new Ssd1306Cmnds.SetColumnAddress());
             _ssd1306.SendCommand(new Ssd1306Cmnds.SetPageAddress(Ssd1306Cmnds.PageAddress.Page0,
                 Ssd1306Cmnds.PageAddress.Page3));
+#if TEST
+            while(!Debugger.IsAttached)
+            {
+                //sleep;
+            }
+#endif
 
             var split = message.Split('\n');
 
